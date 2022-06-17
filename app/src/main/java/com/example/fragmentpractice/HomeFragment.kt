@@ -5,17 +5,16 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
+import androidx.fragment.app.*
 import com.example.fragmentpractice.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() { // detaches and attaches during conf. changes
 
     private lateinit var binding: FragmentHomeBinding
+    private val viewModel: TestViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,15 +46,43 @@ class HomeFragment : Fragment() { // detaches and attaches during conf. changes
 
         binding = FragmentHomeBinding.bind(view)
 
+        // using bundle value
         val data = requireArguments().getString("text_value")
         binding.textView.text = data
 
+        // using viewmodel value, scoped to host activity
+        binding.homeTextView.text = viewModel.currentValue.toString()
+        viewModel.currentValue = 2
+
+        // Toolbar menu inflation
+        binding.homeToolbar.inflateMenu(R.menu.home_menu)
+
+        // modify menu
+        binding.menuReverseButton.setOnClickListener {
+            binding.homeToolbar.menu.clear() // clear menu before modifying
+            // else existing menu items are not modified or removed. new items will be
+            // added together
+
+            binding.homeToolbar.inflateMenu(R.menu.home_reversed_menu)
+        }
+
         binding.homeNextButton.setOnClickListener {
             parentFragmentManager.commit {
+                setCustomAnimations( R.anim.slide_in,
+                    R.anim.fade_out,
+                    R.anim.fade_in,
+                    R.anim.slide_out)
+
                 setReorderingAllowed(true)
-                add<SecondFragment>(R.id.fragmentContainerView)
+                replace<SecondFragment>(R.id.fragmentContainerView)
+                addToBackStack("second fragment")
+
             }
+            // commitNow() does not work well with addToBackStack()
+            // commitNow() causes This transaction is already being added to the back stack
+            //parentFragmentManager.executePendingTransactions() handles back stack issues
         }
+
 
     }
 

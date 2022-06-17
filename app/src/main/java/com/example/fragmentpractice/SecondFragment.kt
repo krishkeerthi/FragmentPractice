@@ -5,13 +5,16 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.fragment.app.*
+import androidx.lifecycle.Lifecycle
 import com.example.fragmentpractice.databinding.FragmentHomeBinding
 import com.example.fragmentpractice.databinding.FragmentSecondBinding
 
@@ -19,6 +22,7 @@ import com.example.fragmentpractice.databinding.FragmentSecondBinding
 class SecondFragment : Fragment() {
 
     private lateinit var binding: FragmentSecondBinding
+    private val viewModel: TestViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,12 +38,34 @@ class SecondFragment : Fragment() {
 
         binding = FragmentSecondBinding.bind(view)
 
+        // communication using viewmodel
+        binding.secondTextView.text = viewModel.currentValue.toString()
+        viewModel.currentValue = 3
+
+        Toast.makeText(requireContext(), "current viewmodel value is ${viewModel.currentValue}", Toast.LENGTH_SHORT).show()
+
+        // Dialog fragment
+        binding.secondDialogButton.setOnClickListener {
+            CustomDialogFragment().show(
+                childFragmentManager, CustomDialogFragment.TAG
+            // null tag allows you to use findFragmentByTag() to retrieve the DialogFragment at a later time.
+            )
+        }
+
         binding.secondNextButton.setOnClickListener {
+            // communication using fragment result api
+            setFragmentResult("communication_key", bundleOf("numeric_value" to 3))
+
             parentFragmentManager.commit {
-                add<ThirdFragment>(R.id.fragmentContainerView)
+                replace<ThirdFragment>(R.id.fragmentContainerView)
                 setReorderingAllowed(true)
+                addToBackStack("Third fragment")
+                //remove(this@SecondFragment) calls till ondestroyview()
             }
         }
+
+        val fragmentTransaction = parentFragmentManager.beginTransaction()
+        fragmentTransaction.setMaxLifecycle(this, Lifecycle.State.CREATED) // no change
     }
 
     override fun onAttach(context: Context) {
@@ -50,6 +76,9 @@ class SecondFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: Fragment Lifecycle2")
+
+        val transitionInflater = TransitionInflater.from(requireContext())
+        exitTransition= transitionInflater.inflateTransition(R.transition.fade)
     }
 
 

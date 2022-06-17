@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ThirdFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello from third fragment" />
+        android:layout_height="wrap_content" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hello from third fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <TextView
+        android:id="@+id/third_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="100" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment3ContainerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/teal_200"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/fragment3_frag2_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/fragment3_home_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Home button"
+        app:layout_constraintBottom_toTopOf="@+id/third_textView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/fragment3_frag2_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Frag 2 Button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment3_home_button"
+        app:layout_constraintEnd_toStartOf="@+id/fragment3_frag3_button"
+        app:layout_constraintStart_toEndOf="@+id/fragment3_home_button" />
+
+    <Button
+        android:id="@+id/fragment3_frag3_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Frag 3 Button"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment3_frag2_button"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
