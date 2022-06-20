@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.*
 import com.example.fragmentpractice.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() { // detaches and attaches during conf. changes
+class HomeFragment : Fragment() { // detaches and attaches during conf. changes, state not restored by default
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: TestViewModel by activityViewModels()
@@ -28,6 +28,7 @@ class HomeFragment : Fragment() { // detaches and attaches during conf. changes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //retainInstance = false // instead of retaining fragment, use viewmodel to retain states
         Log.d(TAG, "onCreate: Fragment Lifecycle1")
     }
 
@@ -66,18 +67,45 @@ class HomeFragment : Fragment() { // detaches and attaches during conf. changes
             binding.homeToolbar.inflateMenu(R.menu.home_reversed_menu)
         }
 
+        //setHasOptionsMenu()
+
         binding.homeNextButton.setOnClickListener {
-            parentFragmentManager.commit {
+
+            // requireActivity().supportFragmentManager and parentFragmentManager behaves similarly
+
+//            requireActivity().supportFragmentManager.commit {  androidx.fragment.app.FragmentManager
+//                //FragmentManager for interacting with fragments associated with this activity.
+//                setCustomAnimations( R.anim.slide_in,
+//                    R.anim.fade_out,
+//                    R.anim.fade_in, // pop
+//                    R.anim.slide_out) // pop
+//
+//                setReorderingAllowed(true)
+//                replace<SecondFragment>(R.id.fragmentContainerView)
+//                addToBackStack("second fragment")
+//            }
+            parentFragmentManager.commit { // androidx.fragment.app.FragmentManager
+                // FragmentManager for interacting with fragments associated with this
+                // fragment's activity
                 setCustomAnimations( R.anim.slide_in,
                     R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.slide_out)
+                    R.anim.fade_in, // pop
+                    R.anim.slide_out) // pop
 
                 setReorderingAllowed(true)
                 replace<SecondFragment>(R.id.fragmentContainerView)
                 addToBackStack("second fragment")
-
+                // hide(this@HomeFragment) this method
             }
+
+
+            //requireActivity().fragmentManager
+                //  android.app.FragmentManager
+
+            //childFragmentManager
+            // private FragmentManager for placing and managing Fragments inside of this Fragment.
+
+
             // commitNow() does not work well with addToBackStack()
             // commitNow() causes This transaction is already being added to the back stack
             //parentFragmentManager.executePendingTransactions() handles back stack issues
@@ -87,6 +115,7 @@ class HomeFragment : Fragment() { // detaches and attaches during conf. changes
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        // we are getting savedinstancestate here from on save instance state callback, we use it restore the state
         Log.d(TAG, "onViewStateRestored: Fragment Lifecycle1")
         super.onViewStateRestored(savedInstanceState)
     }

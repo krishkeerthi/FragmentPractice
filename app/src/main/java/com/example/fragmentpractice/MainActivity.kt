@@ -1,7 +1,9 @@
 package com.example.fragmentpractice
 
+import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
@@ -23,12 +25,14 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.currentValue = 1
 
+        Log.d(TAG, "onCreate: Activity ")
 
         if(savedInstanceState == null)  // don't redraw during conf. changes
         addFragment(bundleOf("text_value" to  "Hello from main activity"))
     }
 
     private fun addFragment(bundle: Bundle){
+
         supportFragmentManager.commit{  // without adding fragment dependency commit is unknown
             setReorderingAllowed(true)  // optimize the fragments state during this transaction
             add<HomeFragment>(R.id.fragmentContainerView, args = bundle)

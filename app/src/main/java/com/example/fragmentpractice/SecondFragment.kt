@@ -64,8 +64,53 @@ class SecondFragment : Fragment() {
             }
         }
 
-        val fragmentTransaction = parentFragmentManager.beginTransaction()
-        fragmentTransaction.setMaxLifecycle(this, Lifecycle.State.CREATED) // no change
+        binding.showButton.setOnClickListener {
+//            val transaction = parentFragmentManager.beginTransaction()
+//            transaction.commit()
+//            transaction.commitNow()
+//            parentFragmentManager.executePendingTransactions()
+//            transaction.isAddToBackStackAllowed
+//            transaction.isEmpty
+//            transaction.setPrimaryNavigationFragment()
+//            transaction.disallowAddToBackStack()
+//            transaction.addSharedElement()
+//            transaction.commitNowAllowingStateLoss()
+//            transaction.commitAllowingStateLoss()
+
+            parentFragmentManager.commit {
+                show(this@SecondFragment)
+                //Shows a previously hidden fragment. This is only relevant for fragments whose
+            // views have been added to a container, as this will cause the view to be shown.
+            }
+        }
+
+        binding.hideButton.setOnClickListener {
+            parentFragmentManager.commit {
+                hide(this@SecondFragment)
+                //Hides an existing fragment. This is only relevant for fragments whose views
+            // have been added to a container, as this will cause the view to be hidden.
+            }
+        }
+
+        binding.attachButton.setOnClickListener {
+            parentFragmentManager.commit {
+                attach(this@SecondFragment)
+                // Re-attach a fragment after it had previously been detached from the UI with detach(Fragment). This causes its view
+            // hierarchy to be re-created, attached to the UI, and displayed.
+            }
+        }
+
+        binding.detachButton.setOnClickListener {
+            parentFragmentManager.commit {
+                detach(this@SecondFragment)
+                // Detach the given fragment from the UI. This is the same state as when it is put on the back stack:
+            // the fragment is removed from the UI, however its state is still being actively managed by the fragment manager.
+            // When going into this state its view hierarchy is destroyed.
+            }
+        }
+
+//        val fragmentTransaction = parentFragmentManager.beginTransaction()
+//        fragmentTransaction.setMaxLifecycle(this, Lifecycle.State.CREATED) // no change
     }
 
     override fun onAttach(context: Context) {

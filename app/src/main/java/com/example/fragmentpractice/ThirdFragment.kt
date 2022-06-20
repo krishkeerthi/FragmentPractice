@@ -11,12 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toolbar
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import com.example.fragmentpractice.databinding.FragmentThirdBinding
 
 //Only one FragmentManager is allowed to control the fragment back stack at any given time
 class ThirdFragment : Fragment() {
+
 
     private lateinit var binding: FragmentThirdBinding
 
@@ -27,6 +29,8 @@ class ThirdFragment : Fragment() {
         Log.d(TAG, "onCreateView: Fragment Lifecycle3")
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_third, container, false)
+        val x = FourthFragment.newInstance("32","32")
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,7 +83,7 @@ class ThirdFragment : Fragment() {
             childFragmentManager.commit {
                 setReorderingAllowed(true)
                 replace<SecondFragment>(R.id.fragment3ContainerView)
-
+                addToBackStack("second fragment")
             }
         }
 
@@ -87,8 +91,11 @@ class ThirdFragment : Fragment() {
             childFragmentManager.commit {
                 setReorderingAllowed(true)
                 replace<ThirdFragment>(R.id.fragment3ContainerView)
+                addToBackStack("Third fragment")
             }
         }
+
+
 
 //        val fragmentTransaction = parentFragmentManager.beginTransaction()
 //       // fragmentTransaction.hide(this)  show, hide, attach, detach not working
@@ -101,7 +108,8 @@ class ThirdFragment : Fragment() {
             setReorderingAllowed(true)
             replace<HomeFragment>(R.id.fragment3ContainerView, args =
             bundleOf("text_value" to  "Home fragment called from third fragment"))
-            setPrimaryNavigationFragment(parentFragmentManager.primaryNavigationFragment)
+            addToBackStack("Home fragment")
+
         }
     }
 
@@ -119,6 +127,23 @@ class ThirdFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.d(TAG, "onAttach: Fragment Lifecycle3")
+
+        // setPrimaryNavigationFragment() didn't working as expected.
+
+        val backCallBack = object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                if(childFragmentManager.backStackEntryCount > 1){
+                    childFragmentManager.popBackStack()
+                    return
+                }
+
+                parentFragmentManager.popBackStack()
+            }
+
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, backCallBack)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,13 +164,14 @@ class ThirdFragment : Fragment() {
         super.onViewStateRestored(savedInstanceState)
     }
 
+
     override fun onStart() {
         Log.d(TAG, "onStart: Fragment Lifecycle3")
         super.onStart()
 
         val fragmentTransaction = parentFragmentManager.beginTransaction()
         // fragmentTransaction.hide(this)
-        fragmentTransaction.detach(this)
+        //fragmentTransaction.detach(this)
     }
 
     override fun onResume() {
