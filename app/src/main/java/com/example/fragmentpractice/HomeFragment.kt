@@ -87,8 +87,8 @@ class HomeFragment : Fragment() { // detaches and attaches during conf. changes,
             parentFragmentManager.commit { // androidx.fragment.app.FragmentManager
                 // FragmentManager for interacting with fragments associated with this
                 // fragment's activity
-                setCustomAnimations( R.anim.slide_in,
-                    R.anim.fade_out,
+                setCustomAnimations( R.anim.slide_in, //enter
+                    R.anim.fade_out, //enter
                     R.anim.fade_in, // pop
                     R.anim.slide_out) // pop
 

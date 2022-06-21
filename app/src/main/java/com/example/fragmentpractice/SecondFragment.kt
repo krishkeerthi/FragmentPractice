@@ -1,5 +1,6 @@
 package com.example.fragmentpractice
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
@@ -32,6 +33,7 @@ class SecondFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_second, container, false)
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: Fragment Lifecycle2")
         super.onViewCreated(view, savedInstanceState)
@@ -42,13 +44,17 @@ class SecondFragment : Fragment() {
         binding.secondTextView.text = viewModel.currentValue.toString()
         viewModel.currentValue = 3
 
-        Toast.makeText(requireContext(), "current viewmodel value is ${viewModel.currentValue}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            "current viewmodel value is ${viewModel.currentValue}",
+            Toast.LENGTH_SHORT
+        ).show()
 
         // Dialog fragment
         binding.secondDialogButton.setOnClickListener {
             CustomDialogFragment().show(
                 childFragmentManager, CustomDialogFragment.TAG
-            // null tag allows you to use findFragmentByTag() to retrieve the DialogFragment at a later time.
+                // null tag allows you to use findFragmentByTag() to retrieve the DialogFragment at a later time.
             )
         }
 
@@ -80,15 +86,16 @@ class SecondFragment : Fragment() {
             parentFragmentManager.commit {
                 show(this@SecondFragment)
                 //Shows a previously hidden fragment. This is only relevant for fragments whose
-            // views have been added to a container, as this will cause the view to be shown.
+                // views have been added to a container, as this will cause the view to be shown.
             }
         }
+
 
         binding.hideButton.setOnClickListener {
             parentFragmentManager.commit {
                 hide(this@SecondFragment)
                 //Hides an existing fragment. This is only relevant for fragments whose views
-            // have been added to a container, as this will cause the view to be hidden.
+                // have been added to a container, as this will cause the view to be hidden.
             }
         }
 
@@ -96,7 +103,7 @@ class SecondFragment : Fragment() {
             parentFragmentManager.commit {
                 attach(this@SecondFragment)
                 // Re-attach a fragment after it had previously been detached from the UI with detach(Fragment). This causes its view
-            // hierarchy to be re-created, attached to the UI, and displayed.
+                // hierarchy to be re-created, attached to the UI, and displayed.
             }
         }
 
@@ -104,14 +111,52 @@ class SecondFragment : Fragment() {
             parentFragmentManager.commit {
                 detach(this@SecondFragment)
                 // Detach the given fragment from the UI. This is the same state as when it is put on the back stack:
-            // the fragment is removed from the UI, however its state is still being actively managed by the fragment manager.
-            // When going into this state its view hierarchy is destroyed.
+                // the fragment is removed from the UI, however its state is still being actively managed by the fragment manager.
+                // When going into this state its view hierarchy is destroyed.
             }
         }
 
 //        val fragmentTransaction = parentFragmentManager.beginTransaction()
 //        fragmentTransaction.setMaxLifecycle(this, Lifecycle.State.CREATED) // no change
+
+
+
+        parentFragmentManager.beginTransaction()
+        parentFragmentManager.executePendingTransactions()
+        parentFragmentManager.popBackStack()
+        parentFragmentManager.backStackEntryCount
+        parentFragmentManager.fragmentFactory
+        parentFragmentManager.fragments
+        parentFragmentManager.isDestroyed
+        parentFragmentManager.isStateSaved
+        parentFragmentManager.host  //Fragments may be hosted by any object; such as an Activity. In order to host fragments, implement
+    // FragmentHostCallback, overriding the methods applicable to the host.
+
+        parentFragmentManager.strictModePolicy
+        parentFragmentManager.clearBackStack("clear")
+        parentFragmentManager.addFragmentOnAttachListener { fragmentManager, fragment ->  }
+        parentFragmentManager.addOnBackStackChangedListener {  }
+        parentFragmentManager.findFragmentByTag("tag") // tag set during add, replace transaction methods
+        val backStackEntry = parentFragmentManager.getBackStackEntryAt(0)
+        parentFragmentManager.popBackStackImmediate()
+        //parentFragmentManager.putFragment()
+        parentFragmentManager.saveBackStack("SAVE")
+//        parentFragmentManager.registerFragmentLifecycleCallbacks()
+//        parentFragmentManager.unregisterFragmentLifecycleCallbacks()
+//        parentFragmentManager.removeFragmentOnAttachListener { fragmentManager, fragment ->  }
+//        parentFragmentManager.restoreBackStack("SAVE")
+//        parentFragmentManager.saveFragmentInstanceState()
+//        parentFragmentManager.clearFragmentResult("ds")
+//        parentFragmentManager.setFragmentResult("ds", Bundle())
+//        parentFragmentManager.clearFragmentResultListener()
+//        parentFragmentManager.setFragmentResultListener()
+
     }
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        Log.d(TAG, "onHiddenChanged: hidden is ${this.isHidden}")
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

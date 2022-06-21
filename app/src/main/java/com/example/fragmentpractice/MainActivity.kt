@@ -1,6 +1,7 @@
 package com.example.fragmentpractice
 
 import android.content.ContentValues.TAG
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -27,16 +28,24 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "onCreate: Activity ")
 
+
         if(savedInstanceState == null)  // don't redraw during conf. changes
         addFragment(bundleOf("text_value" to  "Hello from main activity"))
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        Log.d(TAG, "onConfigurationChanged: ")
+        super.onConfigurationChanged(newConfig)
+
     }
 
     private fun addFragment(bundle: Bundle){
 
         supportFragmentManager.commit{  // without adding fragment dependency commit is unknown
             setReorderingAllowed(true)  // optimize the fragments state during this transaction
-            add<HomeFragment>(R.id.fragmentContainerView, args = bundle)
-            addToBackStack("home fragment")  // adding root frag. to back stack,
+            add<FourthFragment>(R.id.fragmentContainerView, args = bundle)
+            addToBackStack("home fragment")  // Mention the transaction name, not particular fragment
+        // adding root frag. to back stack,
                                                    // during pop up root frag got detached and
                                                     // empty frag container is shown
         }
